@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Author: Martin&林知远
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -Eeuo pipefail
 readonly SCRIPT_URL="https://raw.githubusercontent.com/0157Martin/caddy-manager/main/caddy-manager.sh"

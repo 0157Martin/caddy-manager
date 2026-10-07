@@ -1,5 +1,6 @@
 # caddy-manager
 
+作者：**Martin&林知远**
 `v2ray-manager` 项目体系中的 Caddy 功能分支项目。它接受主干统一控制，也可以独立安装、验证、
 运行、修复和卸载。这里的“分支项目”是架构职责，并非 Git branch。
 

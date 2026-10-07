@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
+# Author: Martin&林知远
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -Eeuo pipefail
-readonly APP_VERSION="1.0.0"
+readonly APP_VERSION="1.0.1"
+readonly AUTHOR="Martin&林知远"
 readonly CADDY_CONFIG="${CADDY_CONFIG:-/etc/caddy/Caddyfile}"
 readonly CADDY_SITE_DIR="${CADDY_SITE_DIR:-/etc/caddy/conf.d}"
 readonly CADDY_WEB_ROOT="${CADDY_WEB_ROOT:-/var/www/v2ray-manager}"
@@ -418,7 +420,7 @@ main() {
     log) journalctl -u caddy -n 100 --no-pager ;;
     repair) repair_caddy; verify_caddy ;;
     uninstall) uninstall_caddy ;;
-    version) printf 'caddy-manager %s\n' "$APP_VERSION" ;;
+    version) printf 'caddy-manager %s by %s\n' "$APP_VERSION" "$AUTHOR" ;;
     help|-h|--help) usage ;;
     *) usage; die "未知操作：$action" ;;
   esac
