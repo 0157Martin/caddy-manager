@@ -8,5 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: bash -n caddy-manager.sh install.sh
-      - run: shellcheck caddy-manager.sh install.sh
+      - run: shellcheck caddy-manager.sh install.sh tests/unit.sh
+      - run: bash tests/unit.sh
       - run: bash caddy-manager.sh version

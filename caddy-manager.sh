@@ -423,4 +423,6 @@ main() {
     *) usage; die "未知操作：$action" ;;
   esac
 }
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi
