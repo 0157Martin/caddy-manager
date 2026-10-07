@@ -3,6 +3,10 @@
 `v2ray-manager` 项目体系中的 Caddy 功能分支项目。它接受主干统一控制，也可以独立安装、验证、
 运行、修复和卸载。这里的“分支项目”是架构职责，并非 Git branch。
 
+个人静态网页归 `caddy-manager` 控制。`v2ray-portfolio-page` 与 `v2ray-resume-page` 是 Caddy 分支
+管理的页面资源项目：Caddy 分支负责选择固定提交、校验部署清单和每个文件的 SHA-256、发布网页
+以及失败回滚；`v2ray-manager` 主干只把 `page` 请求转交给 Caddy 分支。
+
 ## 独立安装、验证和卸载
 
 ```bash
