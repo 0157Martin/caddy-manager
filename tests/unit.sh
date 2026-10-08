@@ -28,8 +28,17 @@ SERVER_NAME=cdn.example.com
 PORT=24443
 PATH_VALUE=/xhttp
 EOF
+cat > "$V2M_NODES_DIR/m2.env" <<'EOF'
+PROFILE=vless-tls-ws
+SERVER_NAME=cdn.example.com
+PORT=24444
+PATH_VALUE=/websocket
+EOF
 render_caddy_site xray cdn.example.com 127.0.0.1:24443 "$xray" /xhttp || fail 'xray render failed'
 grep -Fq 'h2c://127.0.0.1:24443' "$xray" || fail 'h2c route missing'
 grep -Fq '@xray_0 path /xhttp /xhttp/*' "$xray" || fail 'path matcher missing'
+grep -Fq '@xray_1 path /websocket /websocket/*' "$xray" || fail 'WebSocket route missing'
+grep -Fq 'https://127.0.0.1:24444' "$xray" || fail 'WebSocket upstream missing'
+grep -Fq 'versions 1.1' "$xray" || fail 'WebSocket upstream did not require HTTP/1.1'
 ! render_caddy_site xray cdn.example.com 127.0.0.1:24443 "$xray" '/bad path' || fail 'invalid path accepted'
 printf '%s\n' 'Caddy unit tests passed.'

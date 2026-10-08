@@ -2,7 +2,7 @@
 # Author: Martin&林知远
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -Eeuo pipefail
-readonly APP_VERSION="1.0.1"
+readonly APP_VERSION="1.0.2"
 readonly AUTHOR="Martin&林知远"
 readonly CADDY_CONFIG="${CADDY_CONFIG:-/etc/caddy/Caddyfile}"
 readonly CADDY_SITE_DIR="${CADDY_SITE_DIR:-/etc/caddy/conf.d}"
@@ -22,7 +22,7 @@ require_root() { [[ ${EUID:-$(id -u)} -eq 0 ]] || die '请使用 root 运行。'
 valid_port() { [[ $1 =~ ^[0-9]+$ ]] && (( 10#$1 >= 1 && 10#$1 <= 65535 )); }
 valid_server_name() { [[ $1 =~ ^([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}$ ]]; }
 valid_transport_path() { [[ $1 == /* && $1 != *' '* && $1 != *//* && $1 != *\\* ]]; }
-profile_supports_caddy_route() { [[ ${1:-${PROFILE:-}} == vless-tls-xhttp || ${1:-${PROFILE:-}} == vless-ws-tls || ${1:-${PROFILE:-}} == vmess-ws-tls || ${1:-${PROFILE:-}} == trojan-ws-tls ]]; }
+profile_supports_caddy_route() { [[ ${1:-${PROFILE:-}} == vless-tls-xhttp || ${1:-${PROFILE:-}} == vless-tls-ws || ${1:-${PROFILE:-}} == vmess-tls-ws || ${1:-${PROFILE:-}} == trojan-tls-ws ]]; }
 check_caddy_renewal_compatibility() {
   local file
   [[ -d /etc/letsencrypt/renewal ]] || return 0
@@ -144,7 +144,9 @@ render_caddy_xray_site() {
         printf '\t\tflush_interval -1\n\t\ttransport http {\n\t\t\tversions h2c\n\t\t}\n\t}\n'
       else
         printf '\treverse_proxy @xray_%s https://%s {\n' "$index" "${route_upstreams[$index]}"
-        printf '\t\tflush_interval -1\n\t\ttransport http {\n\t\t\ttls_server_name %s\n\t\t}\n\t}\n' "$domain"
+        # Xray WebSocket uses an HTTP/1.1 Upgrade handshake. Prevent upstream
+        # ALPN from selecting HTTP/2, which cannot carry that handshake here.
+        printf '\t\tflush_interval -1\n\t\ttransport http {\n\t\t\tversions 1.1\n\t\t\ttls_server_name %s\n\t\t}\n\t}\n' "$domain"
       fi
     done
     printf '\troot * %s/%s\n\tencode zstd gzip\n\tfile_server\n}\n' "$CADDY_WEB_ROOT" "$domain"
